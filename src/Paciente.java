@@ -1,46 +1,55 @@
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.time.Period;
+import java.util.List;
+import java.util.regex.Pattern;
+
 public class Paciente {
     private String nome;
     private String cpf;
-    private int idade;
+    private LocalDate dataNascimento;
     private String telefone;
+    private List<String> historicoMedico;
 
-
-    public Paciente (String nome, String cpf, int idade, String telefone){
+    public Paciente(String nome, String cpf, LocalDate dataNascimento, String telefone, String historicoMedico) {
+        if (!validarCpf(cpf)){
+            throw new IllegalArgumentException("CPF inválido!");
+        }
         this.nome = nome;
         this.cpf = cpf;
-        this.idade = idade;
+        this.dataNascimento = dataNascimento;
         this.telefone = telefone;
+        this.historicoMedico = new ArrayList<>();
     }
 
-    public String getNome() {
-        return nome;
+    private boolean validarCpf(String cpf) {
+        return Pattern.matches("\\d{11}", cpf);
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public int calcularIdade(){
+        return Period.between(dataNascimento, LocalDate.now()).getYears();
     }
 
-    public String getCpf() {
-        return cpf;
+    public void adicionarNotaHistorico(String nota) {
+        historicoMedico.add(nota);
     }
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
+    public void exibirHistorico(){
+        System.out.println("\n=== Histórico Médico de " + nome + " ===");
+        if (historicoMedico.isEmpty()) {
+            System.out.println("Nenhuma nota adicionada.");
+        } else {
+            for (String nota : historicoMedico) {
+                System.out.println("- " + nota);
+            }
+        }
     }
+    public String getNome() { return nome; }
+    public String getCpf() { return cpf; }
+    public LocalDate getDataNascimento() { return dataNascimento; }
+    public String getTelefone() { return telefone; }
+    public List<String> getHistoricoMedico() { return historicoMedico; }
 
-    public int getIdade() {
-        return idade;
-    }
-
-    public void setIdade(int idade) {
-        this.idade = idade;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
+    public void setNome(String nome) { this.nome = nome; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
 }
